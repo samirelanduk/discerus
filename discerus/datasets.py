@@ -1,13 +1,27 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def plot_dataset(dataframe, title=""):
-    column_names = dataframe.columns
-    for label in np.unique(dataframe[column_names[-1]]):
-        df = dataframe[dataframe[column_names[-1]] == label]
-        plt.scatter(df[column_names[0]], df[column_names[1]], label=label)
-    plt.xlabel(column_names[0])
-    plt.ylabel(column_names[1])
-    plt.title(title)
-    plt.legend()
-    plt.show()
+def plot_dataset(dataframe, title="", output=False):
+    # How many features are there to visualise?
+    feature_count = len(dataframe.columns)
+    if output: feature_count -= 1
+
+    if feature_count == 1:
+        # Just show distribution
+        variables = []
+        if output:
+            for label in np.unique(dataframe.iloc[:, -1]):
+                variables.append(dataframe[dataframe.iloc[:, -1] == label])
+        else: variables = [dataframe]
+        for var in variables:
+            values = var.iloc[:, 0].values
+            plt.hist(
+             values,
+             label=var.values[0][-1],
+             bins=len(values) // 4,
+             alpha=0.5 if len(variables) > 1 else 1
+            )
+        if len(variables) > 1: plt.legend()
+        plt.xlabel(dataframe.columns[0])
+        plt.title(dataframe.columns[0] + " Distribution")
+        plt.show()
