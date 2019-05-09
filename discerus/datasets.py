@@ -8,34 +8,30 @@ def plot_dataset(dataframe, title="", output=False):
 
     if feature_count == 1:
         # Just show distribution
-        variables = dataframe_to_variables(dataframe, output)
-        values = dataframe.iloc[:, 0].values
-        bins = np.histogram(values, bins=len(values) // 4)[1]
-        for var in variables:
-            plt.hist(
-             var.iloc[:, 0].values,
-             label=var.values[0][-1],
-             bins=bins,
-             alpha=0.5 if len(variables) > 1 else 1
-            )
-        if len(variables) > 1: plt.legend()
-        plt.xlabel(dataframe.columns[0])
-        plt.title(dataframe.columns[0] + " Distribution")
+        render_distribution(plt, dataframe, output)
         plt.show()
     elif feature_count == 2:
         # Plot two variables
-        variables = dataframe_to_variables(dataframe, output)
-        for var in variables:
-            plt.scatter(
-             var.iloc[:, 0].values,
-             var.iloc[:, 1].values,
-             label=var.values[0][-1]
-            )
-        if len(variables) > 1: plt.legend()
-        plt.xlabel(dataframe.columns[0])
-        plt.ylabel(dataframe.columns[1])
-        plt.title(dataframe.columns[0] + " vs " + dataframe.columns[1])
+        render_relation(plt, dataframe, output)
         plt.show()
+    elif feature_count > 2:
+        # Plot grid
+        fig = plt.figure()
+        fig.subplots_adjust(hspace=0.5, wspace=0.5)
+        for row in range(1, feature_count + 1):
+            for col in range(1, feature_count + 1):
+                ax = fig.add_subplot(
+                 feature_count, feature_count, ((row - 1) * feature_count + col)
+                )
+                if row == col:
+                    df = dataframe.iloc[:, [row - 1, -1] if output else [row - 1]]
+                    render_distribution(ax, df, output, legend=row == 1)
+                elif row > col:
+                    df = dataframe.iloc[:, [row - 1, col - 1, -1] if output else [row - 1, col - 1]]
+                    render_relation(ax, df, output, legend=False)
+                else:
+                    ax.set_visible(False)
+        if output: fig.legend()
 
 
 def dataframe_to_variables(dataframe, output=False):
@@ -45,3 +41,43 @@ def dataframe_to_variables(dataframe, output=False):
             variables.append(dataframe[dataframe.iloc[:, -1] == label])
     else: variables = [dataframe]
     return variables
+
+
+def render_distribution(axes, dataframe, output=False, legend=True):
+    variables = dataframe_to_variables(dataframe, output)
+    values = dataframe.iloc[:, 0].values
+    bins = np.histogram(values, bins=len(values) // 5)[1]
+    for var in variables:
+        axes.hist(
+         var.iloc[:, 0].values,
+         label=var.values[0][-1] if legend else None,
+         bins=bins,
+         alpha=0.5 if len(variables) > 1 else 1
+        )
+    try:
+        axes.xlabel(dataframe.columns[0])
+        axes.title(dataframe.columns[0] + " Distribution")
+        if len(variables) > 1 and legend: plt.legend()
+    except AttributeError:
+        axes.set_xlabel(dataframe.columns[0])
+        axes.set_title(dataframe.columns[0] + " Distribution")
+
+
+def render_relation(axes, dataframe, output=False, legend=True):
+    variables = dataframe_to_variables(dataframe, output)
+    for var in variables:
+        plt.scatter(
+         var.iloc[:, 0].values,
+         var.iloc[:, 1].values,
+         s=10,
+         label=var.values[0][-1] if legend else None
+        )
+    try:
+        axes.xlabel(dataframe.columns[0])
+        axes.ylabel(dataframe.columns[1])
+        axes.title(dataframe.columns[0] + " vs " + dataframe.columns[1])
+        if len(variables) > 1 and legend: plt.legend()
+    except AttributeError:
+        axes.set_xlabel(dataframe.columns[0])
+        axes.set_ylabel(dataframe.columns[1])
+        axes.set_title(dataframe.columns[0] + " vs " + dataframe.columns[1])
