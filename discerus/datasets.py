@@ -1,7 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 
-def plot_dataset(dataframe, title="", output=False):
+def plot_dataset(dataframe, title="", output=False, color=None):
     # How many features are there to visualise?
     feature_count = len(dataframe.columns)
     if output: feature_count -= 1
@@ -12,7 +12,7 @@ def plot_dataset(dataframe, title="", output=False):
         plt.show()
     elif feature_count == 2:
         # Plot two variables
-        render_relation(plt, dataframe, output)
+        render_relation(plt, dataframe, output, color=color)
         plt.show()
     elif feature_count > 2:
         # Plot grid
@@ -63,7 +63,7 @@ def render_distribution(axes, dataframe, output=False, legend=True):
         axes.set_title(dataframe.columns[0] + " Distribution")
 
 
-def render_relation(axes, dataframe, output=False, legend=True):
+def render_relation(axes, dataframe, output=False, legend=True, color=None):
     variables = dataframe_to_variables(dataframe, output)
     for var in variables:
         plt.scatter(
@@ -72,6 +72,24 @@ def render_relation(axes, dataframe, output=False, legend=True):
          s=10,
          label=var.values[0][-1] if legend else None
         )
+    if color:
+        x_limits, y_limits = axes.xlim(), axes.ylim()
+        grid = []
+        for range_ in (x_limits, y_limits):
+            diff = range_[1] - range_[0]
+            resolution = diff / 100
+            points = [range_[0] - resolution]
+            while points[-1] <= range_[1] + resolution:
+                points.append(points[-1] + resolution)
+            grid.append(points)
+        results = []
+        for r in grid[1]:
+            row = []
+            for c in grid[0]:
+                row.append(color([r, c]))
+            results.append(row)
+        axes.imshow(results, interpolation='nearest', origin='low', extent=axes.xlim() + axes.ylim(), alpha=0.7)
+        axes.colorbar()
     try:
         axes.xlabel(dataframe.columns[0])
         axes.ylabel(dataframe.columns[1])
