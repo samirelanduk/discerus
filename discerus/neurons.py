@@ -1,4 +1,11 @@
 class MCPNeuron:
+    """A McCullock-Pitt neuron is a function of binary inputs, which returns a
+    binary output.
+
+    It sums the inputs, and if they are over some threshold, returns True.
+
+    You can specify that some inputs are inhibitory - of they are True, the
+    output will always be False."""
 
     def __init__(self, threshold, inhitors=None):
         self.inhibtors = inhitors or []
@@ -6,6 +13,6 @@ class MCPNeuron:
 
     
     def __call__(self, inputs):
-        if any(val == 1 and i in self.inhibtors for i, val in enumerate(inputs)):
+        if any(x == 1 and i in self.inhibtors for i, x in enumerate(inputs)):
             return False
         return sum(inputs) >= self.threshold
