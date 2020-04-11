@@ -21,3 +21,12 @@ class MCPNeuronTests(TestCase):
         self.assertFalse(NOR([True, False]))
         self.assertFalse(NOR([False, True]))
         self.assertTrue(NOR([False, False]))
+
+
+
+class PerceptronTests(TestCase):
+
+    def test(self):
+        perceptron = Perceptron([2, 5], 8)
+        self.assertTrue(perceptron([-1, 2]))
+        self.assertFalse(perceptron([-1, 1.99]))

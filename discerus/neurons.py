@@ -16,3 +16,16 @@ class MCPNeuron:
         if any(x == 1 and i in self.inhibtors for i, x in enumerate(inputs)):
             return False
         return sum(inputs) >= self.threshold
+
+
+
+class Perceptron:
+
+    def __init__(self, weights, threshold):
+        self.weights = weights
+        self.threshold = threshold
+    
+
+    def __call__(self, inputs):
+        net_sum = sum(input * weight for input, weight in zip(inputs, self.weights))
+        return net_sum >= self.threshold
