@@ -26,7 +26,9 @@ class MCPNeuronTests(TestCase):
 
 class PerceptronTests(TestCase):
 
-    def test(self):
-        perceptron = Perceptron([2, 5], 8)
+    def test_single_input(self):
+        perceptron = Perceptron(2)
+        perceptron.weights = [2, 5]
+        perceptron.threshold = 8
         self.assertTrue(perceptron([-1, 2]))
         self.assertFalse(perceptron([-1, 1.99]))

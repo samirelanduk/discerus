@@ -21,11 +21,20 @@ class MCPNeuron:
 
 class Perceptron:
 
-    def __init__(self, weights, threshold):
-        self.weights = weights
-        self.threshold = threshold
+    def __init__(self, size):
+        self.size = size
+        self.weights = [0] * size
+        self.threshold = 0
     
 
-    def __call__(self, inputs):
-        net_sum = sum(input * weight for input, weight in zip(inputs, self.weights))
-        return net_sum >= self.threshold
+    def __call__(self, input):
+        net_input = self.net_input(input)
+        return self.activation(net_input)
+    
+
+    def net_input(self, input):
+        return sum(input * weight for input, weight in zip(input, self.weights))
+    
+
+    def activation(self, net_input):
+        return net_input >= self.threshold
