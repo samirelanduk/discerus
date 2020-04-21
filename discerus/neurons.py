@@ -1,3 +1,5 @@
+import numpy as np
+
 class MCPNeuron:
     """A McCullock-Pitt neuron is a function of binary inputs, which returns a
     binary output.
@@ -23,18 +25,18 @@ class Perceptron:
 
     def __init__(self, size):
         self.size = size
-        self.weights = [0] * size
+        self.weights = np.zeros(size)
         self.threshold = 0
     
 
     def __call__(self, input):
-        net_input = self.net_input(input)
+        net_input = self.net_input(np.array(input))
         return self.activation(net_input)
     
 
     def net_input(self, input):
-        return sum(input * weight for input, weight in zip(input, self.weights))
+        return self.weights.dot(input.T)
+        
     
-
     def activation(self, net_input):
         return net_input >= self.threshold

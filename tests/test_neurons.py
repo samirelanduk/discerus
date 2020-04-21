@@ -1,3 +1,4 @@
+import numpy as np
 from unittest import TestCase
 from discerus.neurons import *
 
@@ -28,7 +29,15 @@ class PerceptronTests(TestCase):
 
     def test_single_input(self):
         perceptron = Perceptron(2)
-        perceptron.weights = [2, 5]
+        perceptron.weights = np.array([2, 5])
         perceptron.threshold = 8
         self.assertTrue(perceptron([-1, 2]))
         self.assertFalse(perceptron([-1, 1.99]))
+    
+
+    def test_multiple_inputs(self):
+        perceptron = Perceptron(2)
+        perceptron.weights = np.array([2, 5])
+        perceptron.threshold = 8
+        self.assertTrue(perceptron([[-1, 2], [-1, 1.99]])[0])
+        self.assertFalse(perceptron([[-1, 2], [-1, 1.99]])[1])
