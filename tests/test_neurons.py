@@ -41,3 +41,11 @@ class PerceptronTests(TestCase):
         perceptron.threshold = 8
         self.assertTrue(perceptron([[-1, 2], [-1, 1.99]])[0])
         self.assertFalse(perceptron([[-1, 2], [-1, 1.99]])[1])
+    
+
+    def test_perceptron_training(self):
+        perceptron = Perceptron(2)
+        self.assertEqual(perceptron.weights[0], 0)
+        self.assertEqual(perceptron.weights[1], 0)
+        #print(perceptron.error([[10, 10], [-100000000, -1]], [1, 0]))
+        perceptron.train()

@@ -27,6 +27,7 @@ class Perceptron:
         self.size = size
         self.weights = np.zeros(size)
         self.threshold = 0
+        self.learning_rate = 0.1
     
 
     def __call__(self, input):
@@ -40,3 +41,13 @@ class Perceptron:
     
     def activation(self, net_input):
         return net_input >= self.threshold
+    
+
+    def error(self, input, true_output):
+        output = self(input)
+        print(output)
+        return true_output - output
+
+
+    def train(self):
+        pass
